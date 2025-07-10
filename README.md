@@ -9,11 +9,11 @@ This installer is intended to take a relatively modern desktop/laptop with a bla
 This repo is only really intended for me. I've been enjoying a lot of KDE-based distros, but a lot of them are either very inflexible or very difficult to configure. I figured an easy and relatively foolproof Arch configuration script might help with that. I find `archinstall` to be a little unreliable and I want a desktop that is consistent and reliable across multiple machines, without having to tailor each one... so a premade installer makes sense.
 
 ### Good Things About This Installer:
-- OOTB HDR support using KDE and Wayland
-- `pacman` has excellent repositories
-- The Arch wiki has great tutorials on further modifications
-- BTRFS compression enabled OOTB to help game assets load faster and store more densely
-- RTC is automatically configured to local time (not UTC), to avoid pains when dualbooting with Windows
+- OOTB HDR support using KDE and Wayland.
+- `pacman` has excellent repositories.
+- The Arch wiki has great tutorials on further modifications. This is not a full OS, this is just a script to get Arch working quickly.
+- BTRFS compression enabled OOTB to help game assets load faster and store more densely.
+- RTC is automatically configured to local time (not UTC), to avoid pains when dualbooting with Windows.
 - Some common tools are pre-installed, although really you could do that yourself if you wanted.
 
 ### Bad Things About This Installer:
@@ -24,7 +24,11 @@ This repo is only really intended for me. I've been enjoying a lot of KDE-based 
 
 ## Installation
 1: Follow the [Arch installation guide](https://wiki.archlinux.org/title/Installation_guide) to prepare and boot from a live Arch environment (go up to step 1.7).
+
 2: To start the script, the computer must have internet. Either use an ethernet connection or iuse `iwctl` to connect to WiFi, just like the above wiki page says.
+
 3: Run `curl [SOMETHING HERE, HOLD ON WHILE I MAKE IT] | bash -s` to download the script to the installation medium and execute it. 
+
 -# Note that `curl`ing and `bash`ing random scripts with root privelege on an installation medium is **sketchy as hell** and should be avoided unless you trust the source of the script. Thank you for trusting me, I'll try not to bugger up your computer.
+
 4: Once the installer finishes, you may need to give GRUB priority in BIOS. After that, it should be smooth booting from there.
