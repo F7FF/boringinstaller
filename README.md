@@ -1,2 +1,30 @@
 # boringinstaller
-A boring way to quickly install a KDE-based Arch desktop.
+A boring way to quickly install a preconfigured Arch desktop.
+
+# (This is a work in progress! Currently not stable, do NOT attempt to install)
+
+## But why?
+This installer is intended to take a relatively modern desktop/laptop with a blankable disk (see requirements) and make a pre-configured Arch KDE system. I've left a lot of documentation to help explain the process and the choices that I made.
+
+This repo is only really intended for me. I've been enjoying a lot of KDE-based distros, but a lot of them are either very inflexible or very difficult to configure. I figured an easy and relatively foolproof Arch configuration script might help with that. I find `archinstall` to be a little unreliable and I want a desktop that is consistent and reliable across multiple machines, without having to tailor each one... so a premade installer makes sense.
+
+### Good Things About This Installer:
+- OOTB HDR support using KDE and Wayland
+- `pacman` has excellent repositories
+- The Arch wiki has great tutorials on further modifications
+- BTRFS compression enabled OOTB to help game assets load faster and store more densely
+- RTC is automatically configured to local time (not UTC), to avoid pains when dualbooting with Windows
+- Some common tools are pre-installed, although really you could do that yourself if you wanted.
+
+### Bad Things About This Installer:
+- This installer uses modern-ish GPU drivers (namely `mesa` and Nvidia >570), so some older hardware might not work well. As a general rule, if it's post-2016, it'll be OK. Of course, you can always mess with it *after* the installation.
+- This configuration is heavier than most Arch installations. Still lighter than Windows, but this ain't gonna run on a C2D.
+- Flatpak is used to install Steam. Some people don't like it.
+- I am a singular doofus with not much testing capability, so only use this script on a computer that you don't mind messing up.
+
+## Installation
+1: Follow the [Arch installation guide](https://wiki.archlinux.org/title/Installation_guide) to prepare and boot from a live Arch environment (go up to step 1.7).
+2: To start the script, the computer must have internet. Either use an ethernet connection or iuse `iwctl` to connect to WiFi, just like the above wiki page says.
+3: Run `curl [SOMETHING HERE, HOLD ON WHILE I MAKE IT] | bash -s` to download the script to the installation medium and execute it. 
+-# Note that `curl`ing and `bash`ing random scripts with root privelege on an installation medium is **sketchy as hell** and should be avoided unless you trust the source of the script. Thank you for trusting me, I'll try not to bugger up your computer.
+4: Once the installer finishes, you may need to give GRUB priority in BIOS. After that, it should be smooth booting from there.
