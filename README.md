@@ -1,7 +1,7 @@
 # boringinstaller
 A boring way to quickly install a preconfigured Arch desktop.
 
-*In its current state, this script is very VERY new and contains a lot of bugs. It can get to a stable desktop, but Nvidia GPU drivers need more configuring - be wary!*
+*In its current state, this script is very VERY new and contains a lot of bugs. Don't use it unless you're already familiar with Arch and can fix it!*
 
 ## But why?
 This installer is intended to take a relatively modern desktop/laptop with a blankable disk (see requirements) and make a pre-configured Arch KDE system. I've left a lot of documentation to help explain the process and the choices that I made.
