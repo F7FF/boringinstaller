@@ -3,10 +3,10 @@
 #This is the "main" shell file, intended to be curled and bashed by the installation medium.
 
 echo "Welcome to the Boring Installer!"
-echo "First, take a look at the output of fdisk and see what the device identifier of your target drive is (eg. /dev/sda, or /dev/nvme0)"
-echo "-----  OUTPUT OF FDISK  -----"
-fdisk -l
-echo "----- END OF FDISK LIST -----"
+echo "First, take a look at the output of lsblk and see what the device identifier of your target drive is (eg. /dev/sda, or /dev/nvme0)"
+echo "-----  OUTPUT OF LSBLK  -----"
+lsblk
+echo "----- END OF LSBLK LIST -----"
 echo "Choose the disk you'd like to install to. ALL DATA ON THE DISK WILL BE LOST!"
 echo "(for example, "/dev/sda", "/dev/nvme0")"
 
@@ -67,7 +67,7 @@ mount --mkdir "$EFIPARTITION" /mnt/boot || { echo "Failed to mount EFI partition
 echo "(BI 5) Bootstrapping main installation and installing starter packages"
 
 #Here comes the big pacstrap line, where we create the new OS structure and install all premade packages.
-pacstrap -K /mnt base linux-zen linux-firmware plasma-meta kde-applications-meta ffmpeg pipewire-jack gnu-free-fonts pyside6 cron tesseract-data-eng firefox flatpak nvidia-open mesa vulkan-radeon spectacle kate sddm sddm-kcm networkmanager ufw dosfstools btrfs-progs exfatprogs ntfs-3g os-prober network-manager-applet nm-connection-editor iwd plasma-nm grub efibootmgr sudo dhcpcd fastfetch memtest86+ || { echo "Error while pacstrapping!"; exit 1;}
+pacstrap -K /mnt base linux-zen linux-firmware plasma-meta kde-applications-meta ffmpeg pipewire-jack gnu-free-fonts pyside6 cron tesseract-data-eng firefox flatpak nvidia-open mesa vulkan-radeon spectacle kate sddm sddm-kcm networkmanager ufw dosfstools btrfs-progs exfatprogs ntfs-3g os-prober nm-connection-editor iwd plasma-nm grub efibootmgr sudo fastfetch memtest86+ nano || { echo "Error while pacstrapping!"; exit 1;}
 
 echo "(BI 6) chrooting into installation and configuring..."
 
