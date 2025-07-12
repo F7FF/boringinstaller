@@ -27,7 +27,7 @@ This repo is only really intended for me. I've been enjoying a lot of KDE-based 
 
 2: To start the script, the computer must have internet. Either use an ethernet connection or iuse `iwctl` to connect to WiFi, just like the above wiki page says.
 
-3: Run `curl [SOMETHING HERE, HOLD ON WHILE I MAKE IT] | bash -s` to download the script to the installation medium and execute it. 
+3: Run `curl https://raw.githubusercontent.com/F7FF/boringinstaller/refs/heads/main/main.sh | bash -s` to download the script to the installation medium and execute it. 
 
 -# Note that `curl`ing and `bash`ing random scripts with root privelege on an installation medium is **sketchy as hell** and should be avoided unless you trust the source of the script. Thank you for trusting me, I'll try not to bugger up your computer.
 
