@@ -74,43 +74,49 @@ echo "(BI 6) chrooting into installation and configuring..."
 #generating fstab before we chroot...
 genfstab -U /mnt >> /mnt/etc/fstab || { echo "Error while generating fstab!"; exit 1; }
 
-#chroot into the mountpoint for the rest of this script
-arch-chroot /mnt || { echo "Error while chrooting!"; exit 1; }
+#The rest of this script needs to be run while chrooted into the destination installation. This is awkward, as arch-chroot only lets us chroot one command at a time. Oh well.
+#There might be a different solution using normal chroot by shuffling around some root fs things, but that could be quite tricky.
 
-locale-gen #Generate locale file at /etc/locale.gen
+echo "(BI 6.1) Generating locale file..."
+
+arch-chroot /mnt locale-gen || { echo "Failed to generate locale file!"; exit 1; }#Generate locale file at /etc/locale.gen
 #uncomment a line here?
 
+echo "(BI 6.2) Setting hostname..."
 #set hostname
-echo "$SYSTEMNAME" >> /etc/hostname
+arch-chroot /mnt echo "$SYSTEMNAME" >> /etc/hostname || echo "Failed to set computer network name! Continuing because it's non-critical."
 
-#possibly initramfs here?
+#possibly initramfs here? should already be done by pacstrap though
 
+echo "(BI 6.3) Setting root password..."
 #set root password
-echo "$ROOTPASSWORD" | passwd root --stdin || { echo "Failed to set root password!"; exit 1; }
+arch-chroot /mnt echo "$ROOTPASSWORD" | passwd root --stdin || { echo "Failed to set root password!"; exit 1; }
 
+echo "(BI 6.4) Creating user..."
 #make user
-useradd -m "$USERNAME" || { echo "Failed to create user ${USERNAME}!"; exit 1; }
-echo "${USERNAME} ALL=(ALL) ALL #added on installation by the Boring Installer" >> /etc/sudoers
-echo "$USERPASSWORD" | passwd "$USERNAME" --stdin | { echo "Failed to set user password!"; exit 1; }
+arch-chroot /mnt useradd -m "$USERNAME" || { echo "Failed to create user ${USERNAME}!"; exit 1; }
+arch-chroot /mnt echo "${USERNAME} ALL=(ALL) ALL #added on installation by the Boring Installer" >> /etc/sudoers { echo "Failed to add ${USERNAME} to sudoers!"; exit 1; }
+arch-chroot /mnt echo "$USERPASSWORD" | passwd "$USERNAME" --stdin | { echo "Failed to set user password!"; exit 1; }
 
-
+echo "(BI 6.5) Configuring GRUB..."
 #configuring GRUB
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ARCHGRUB || { echo "Error while configuring GRUB!"; exit 1; }
-grub-mkconfig -o /boot/grub/grub.cfg || { echo "Error while creating grub.cfg!"; exit 1; }
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ARCHGRUB || { echo "Error while configuring GRUB!"; exit 1; }
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg || { echo "Error while creating grub.cfg!"; exit 1; }
 #not sure about this, do we set efi directory to /mnt/boot?
 
-systemctl enable sddm #needed to get to the login
+echo "(BI 6.6) Enabling drivers..."
+arch-chroot /mnt systemctl enable sddm || echo "Error while enabling SDDM login!" #needed to get to the login
 
 #systemctl enable systemd-networkd #needed for internet (disabled in favour of NetworkManager)
 #systemctl enable systemd-resolved #needed for internet...?
 
-systemctl enable NetworkManager #needed for internet! capitals are important!
+arch-chroot /mnt systemctl enable NetworkManager || echo "Error while enabling NetworkManager!" #needed for internet! capitals are important!
 
 #set local RTC 1, to make Windows dualbooting easier
-timedatectl set-local-rtc 1
+arch-chroot /mnt timedatectl set-local-rtc 1 || echo "Error while configuring RTC to use local timezone!
 
 #TODO: create a file on the user's desktop, explaining any next steps (setting locale?)
-#TODO: maybe install Steam using flatpak?
+#TODO: maybe install Steam using flatpak? seems to be impossible inside installer though
 #TODO: maybe prepare some virtualization tools for running a windows VM?
 #TODO: make the kmix icon go away from the toolbar?
 #TODO: make KDE default to breeze dark, and make SDDM do same
