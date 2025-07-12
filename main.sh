@@ -20,6 +20,17 @@ read -p "Choose a password for the root user: " ROOTPASSWORD
 
 echo "Target disk set to '$DISKNAME'"
 
+#TODO: if we don't create the disk from scratch, we don't neccessarily know what the numbers of the partitions are, so we should be careful to find them.
+#Also, we need to add a "p" for NVME drives (and maybe MMC too?)
+EFIPARTITION="${DISKNAME}1"
+MAINPARTITION="${DISKNAME}2"
+
+echo "EFI partition will be installed at  ${EFIPARTITION}"
+echo "Main partition will be installed at ${MAINPARTITION}"
+echo "If this all seems correct, press [ENTER] to begin. If not, CTRL-C out of this script."
+
+read
+
 echo "BEGINNING OF INSTALLATION"
 echo "(BI 1) Setting RTC to local TZ and synchronizing clock (to prevent clock confusion on dualbooters)..."
 
@@ -28,18 +39,12 @@ timedatectl                 #sync RTC to local for installation
 
 echo "(BI 2) Clearing and formatting disk partitions..."
 
-#TODO: in future, make it possible to install without clearing the disk? just clear anything that isn't an NTFS/EXT4/BTRFS partition
-#TODO: consider using sfdisk?
+#TODO: in future, make it possible to install without clearing the disk? just allow the user to specify any empty space, they can clear some space using whatever OS they're dualbooting
 parted -s "$DISKNAME" mklabel gpt || { echo "Error creating GPT table."; exit 1; } #make a new GPT table
 
 #use parted to make two partitions - an EFI partition (eg. /dev/sdX1) and a BTRFS partition (eg. /dev/sdX2)
 parted -s "$DISKNAME" mkpart ESP fat32 1MiB 1024MiB || { echo "Error creating EFI partition."; exit 1; }
 parted -s "$DISKNAME" mkpart archlinux btrfs 1024MiB 100% || { echo "Error creating main partition."; exit 1; }
-
-#TODO: if we don't create the disk from scratch, we don't neccessarily know what the numbers of the partitions are, so we should be careful to find them.
-#Also, we need to add a "p" for NVME drives (and maybe MMC too?)
-EFIPARTITION="${DISKNAME}1"
-MAINPARTITION="${DISKNAME}2"
 
 echo "EFI partition name:  $EFIPARTITION"
 echo "Main partition name: $MAINPARTITION"
@@ -62,7 +67,7 @@ mount --mkdir "$EFIPARTITION" /mnt/boot || { echo "Failed to mount EFI partition
 echo "(BI 5) Bootstrapping main installation and installing starter packages"
 
 #Here comes the big pacstrap line, where we create the new OS structure and install all premade packages.
-pacstrap -K /mnt base linux-zen linux-firmware plasma-meta kde-applications-meta ffmpeg pipewire-jack gnu-free-fonts pyside6 cron tesseract-data-eng firefox flatpak nvidia-open mesa vulkan-radeon spectacle kate sddm sddm-kcm networkmanager ufw dosfstools btrfs-progs exfatprogs ntfs-3g os-prober network-manager-applet nm-connection-editor iwd plasma-nm grub efibootmgr sudo dhcpcd || { echo "Error while pacstrapping!"; exit 1;}
+pacstrap -K /mnt base linux-zen linux-firmware plasma-meta kde-applications-meta ffmpeg pipewire-jack gnu-free-fonts pyside6 cron tesseract-data-eng firefox flatpak nvidia-open mesa vulkan-radeon spectacle kate sddm sddm-kcm networkmanager ufw dosfstools btrfs-progs exfatprogs ntfs-3g os-prober network-manager-applet nm-connection-editor iwd plasma-nm grub efibootmgr sudo dhcpcd fastfetch memtest86+ || { echo "Error while pacstrapping!"; exit 1;}
 
 echo "(BI 6) chrooting into installation and configuring..."
 
@@ -76,7 +81,7 @@ locale-gen #Generate locale file at /etc/locale.gen
 #uncomment a line here?
 
 #set hostname
-echo "$SYSTEMNAME" >> /mnt/etc/hostname 
+echo "$SYSTEMNAME" >> /etc/hostname
 
 #possibly initramfs here?
 
@@ -96,7 +101,7 @@ grub-mkconfig -o /boot/grub/grub.cfg || { echo "Error while creating grub.cfg!";
 
 systemctl enable sddm #needed to get to the login
 
-#systemctl enable systemd-networkd #needed for internet
+#systemctl enable systemd-networkd #needed for internet (disabled in favour of NetworkManager)
 #systemctl enable systemd-resolved #needed for internet...?
 
 systemctl enable NetworkManager #needed for internet! capitals are important!
@@ -105,5 +110,9 @@ systemctl enable NetworkManager #needed for internet! capitals are important!
 timedatectl set-local-rtc 1
 
 #TODO: create a file on the user's desktop, explaining any next steps (setting locale?)
+#TODO: maybe install Steam using flatpak?
+#TODO: maybe prepare some virtualization tools for running a windows VM?
+#TODO: make the kmix icon go away from the toolbar?
+#TODO: make KDE default to breeze dark, and make SDDM do same
 
 echo "Installation complete! Reboot whenever you're ready."
