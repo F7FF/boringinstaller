@@ -1,8 +1,6 @@
 # boringinstaller
 A boring way to quickly install a preconfigured Arch desktop.
 
-# (This is a work in progress! Currently not stable, do NOT attempt to install)
-
 ## But why?
 This installer is intended to take a relatively modern desktop/laptop with a blankable disk (see requirements) and make a pre-configured Arch KDE system. I've left a lot of documentation to help explain the process and the choices that I made.
 
@@ -22,13 +20,20 @@ This repo is only really intended for me. I've been enjoying a lot of KDE-based 
 - Flatpak is used to install Steam. Some people don't like it.
 - I am a singular doofus with not much testing capability, so only use this script on a computer that you don't mind messing up.
 
+# Current Problems:
+- **This installer requires a SATA/SCSI `/dev/sdX`-style disk at the moment, NVME drives won't (quite!) work yet. Sorry! I'm working on it.
+- It is probably missing some drivers/fixes at the moment.
+- I'd like to make the package list tidier so that each package has an explainer.
+
+*Please, PLEASE notify me of any bugs! I want this to be a well-polished installer, so I need to work out any problems that occur. Also let me know if you think a package should be included/excluded.*
+
 ## Installation
 1: Follow the [Arch installation guide](https://wiki.archlinux.org/title/Installation_guide) to prepare and boot from a live Arch environment (go up to step 1.7).
 
-2: To start the script, the computer must have internet. Either use an ethernet connection or iuse `iwctl` to connect to WiFi, just like the above wiki page says.
+2: To start the script, the computer must have internet. Either use an ethernet connection or iuse `iwctl` to connect to WiFi, just like the Arch wiki page says.
 
-3: Run `curl https://raw.githubusercontent.com/F7FF/boringinstaller/refs/heads/main/main.sh | bash -s` to download the script to the installation medium and execute it. 
+3: Run `curl https://raw.githubusercontent.com/F7FF/boringinstaller/refs/heads/main/main.sh > main.sh` to download the script to the installation ramdisk, run `chmod 777 main.sh` to allow it to be executed, and run `./main.sh` to execute it. The installer will ask a few questions and then install Arch to the drive specified.
 
--# Note that `curl`ing and `bash`ing random scripts with root privelege on an installation medium is **sketchy as hell** and should be avoided unless you trust the source of the script. Thank you for trusting me, I'll try not to bugger up your computer.
+(Note that `curl`ing and `bash`ing random scripts with root privelege on an installation medium is **sketchy as hell** and should be avoided unless you trust the source of the script. Thank you for trusting me, I'll try not to bugger up your computer.)
 
 4: Once the installer finishes, you may need to give GRUB priority in BIOS. After that, it should be smooth booting from there.
