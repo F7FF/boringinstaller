@@ -37,4 +37,6 @@ This repo is only really intended for me. I've been enjoying a lot of KDE-based 
 3: Run `curl https://raw.githubusercontent.com/F7FF/boringinstaller/refs/heads/main/main.sh > main.sh` to download the script to the installation ramdisk, run `chmod 777 main.sh` to allow it to be executed, and run `./main.sh | tee stdout log.txt` to execute it. The installer will ask a few questions and then install Arch to the drive specified.
 (Note that `curl`ing and `bash`ing random scripts with root privelege on an installation medium is **sketchy as hell** and should be avoided unless you trust the source of the script. Thank you for trusting me, I'll try not to bugger up your computer.)
 
+*(At this point, the script's account creation section is broken, so you'll need to follow the Arch guide to create a user account and a root password.)*
+
 4: Once the installer finishes, you may need to give GRUB priority in BIOS. After that, it should be smooth booting from there.
